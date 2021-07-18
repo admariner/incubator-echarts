@@ -76,7 +76,12 @@ interface TreePathInfo {
 }
 
 interface TreemapSeriesCallbackDataParams extends CallbackDataParams {
+    /**
+     * @deprecated
+     */
     treePathInfo?: TreePathInfo[]
+
+    treeAncestors?: TreePathInfo[]
 }
 
 interface ExtraStateOption {
@@ -190,7 +195,7 @@ export interface TreemapSeriesOption
         show?: boolean
         height?: number
 
-        emptyItemWidth: number  // With of empty width
+        emptyItemWidth?: number  // With of empty width
         itemStyle?: BreadcrumbItemStyleOption
 
         emphasis?: {
@@ -370,7 +375,7 @@ class TreemapSeriesModel extends SeriesModel<TreemapSeriesOption> {
         function beforeLink(nodeData: List) {
             nodeData.wrapMethod('getItemModel', function (model, idx) {
                 const node = tree.getNodeByDataIndex(idx);
-                const levelModel = levelModels[node.depth];
+                const levelModel = node ? levelModels[node.depth] : null;
                 // If no levelModel, we also need `designatedVisualModel`.
                 model.parentModel = levelModel || designatedVisualModel;
                 return model;
@@ -412,7 +417,9 @@ class TreemapSeriesModel extends SeriesModel<TreemapSeriesOption> {
         const params = super.getDataParams.apply(this, arguments as any) as TreemapSeriesCallbackDataParams;
 
         const node = this.getData().tree.getNodeByDataIndex(dataIndex);
-        params.treePathInfo = wrapTreePathInfo(node, this);
+        params.treeAncestors = wrapTreePathInfo(node, this);
+        // compatitable the previous code.
+        params.treePathInfo = params.treeAncestors;
 
         return params;
     }

@@ -116,9 +116,14 @@ class EffectScatterSeriesModel extends SeriesModel<EffectScatterSeriesOption> {
             // Scale of ripple
             scale: 2.5,
             // Brush type can be fill or stroke
-            brushType: 'fill'
+            brushType: 'fill',
+            // Ripple number
+            number: 3
         },
 
+        universalTransition: {
+            divideShape: 'clone'
+        },
         // Cartesian coordinate system
         // xAxisIndex: 0,
         // yAxisIndex: 0,
